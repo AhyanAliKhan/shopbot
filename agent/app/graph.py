@@ -221,7 +221,9 @@ def make_checkpointer():
         from psycopg.rows import dict_row
         from psycopg_pool import ConnectionPool
 
+        # Neon drops idle SSL connections: test each one on checkout and retire idle ones early.
         pool = ConnectionPool(settings.libpq_url(), min_size=1, max_size=5, open=True,
+                              check=ConnectionPool.check_connection, max_idle=120,
                               kwargs={"autocommit": True, "prepare_threshold": None, "row_factory": dict_row})
         saver = PostgresSaver(pool)
     else:
