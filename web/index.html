@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bazaar Bloom – Shop with Bloom</title>
+  <meta name="description" content="Small-batch goods with Bloom, an AI sales assistant that finds products, fills your cart and places orders." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>" />
+</head>
+<body>
+  <nav class="topbar">
+    <a class="logo" href="./">Bazaar <span>Bloom</span></a>
+    <div class="spacer"></div>
+    <span id="who" class="muted"></span>
+    <button class="btn small" id="loginBtn">Sign in</button>
+    <button class="btn small" id="ordersBtn">Orders</button>
+    <button class="btn small primary" id="cartBtn">Cart <span class="badge" id="cartCount">0</span></button>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <h1>Thoughtful goods, picked with you.</h1>
+      <p>Tell Bloom what you need: a size, a budget, a gift for your sister. It searches the shop, fills your cart, applies coupons and places the order once you say yes.</p>
+      <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+        <button class="btn primary" onclick="openChat('I need running shoes under $100')">Ask Bloom</button>
+        <a class="btn" href="#shop" style="text-decoration:none">Browse the shop</a>
+      </div>
+      <p class="muted" style="font-size:13px;margin-top:14px">Use code <b>WELCOME10</b> for 10% off · Free shipping over $50 · Cash on delivery</p>
+    </div>
+    <div class="hero-card">
+      <div class="muted" style="font-size:13px">Bloom · AI sales assistant</div>
+      <div class="bubble me">A vegan gift under $25?</div>
+      <div class="bubble">Here are three: 🕯️ Soy Wax Candle (P015, $19), 👜 Canvas Tote (P011, $18), 🧼 Shampoo Bar (P020, $12). Want me to add one?</div>
+      <div class="bubble me">Add the candle and check out to Lahore</div>
+      <div class="bubble">Total $24.99 incl. shipping, 2-3 days. Shall I go ahead? (yes/no)</div>
+    </div>
+  </section>
+
+  <main class="container" id="shop">
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <!-- cart / orders / memory drawer -->
+  <aside class="drawer" id="drawer">
+    <header><h3 id="drawerTitle" style="margin:0">Cart</h3><button class="btn small ghost" onclick="closeDrawer()">✕</button></header>
+    <div class="content" id="drawerBody"></div>
+  </aside>
+
+  <!-- chat -->
+  <button class="btn primary chat-fab" id="chatFab" onclick="openChat()">💬 Chat with Bloom</button>
+  <section class="chat" id="chat" aria-label="Chat with Bloom">
+    <header>
+      <div class="avatar">🌸</div>
+      <div style="flex:1"><b>Bloom</b><div class="muted" style="font-size:12px">AI sales assistant · remembers you</div></div>
+      <button class="btn small" title="Start a new conversation" onclick="newThread()">New chat</button>
+      <button class="btn small ghost" onclick="closeChat()">✕</button>
+    </header>
+    <div class="msgs" id="msgs"></div>
+    <div class="suggest" id="suggest"></div>
+    <form id="chatForm">
+      <input id="chatInput" placeholder="Ask about products, your cart, orders…" autocomplete="off" maxlength="2000" />
+      <button class="btn primary" type="submit">Send</button>
+    </form>
+  </section>
+
+  <div class="toast" id="toast"></div>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
