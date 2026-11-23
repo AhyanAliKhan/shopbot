@@ -133,7 +133,9 @@ const SUGGESTIONS = ["Gifts under $30", "Running shoes size 42", "What's in my c
 function addMsg(role, text, tools) {
   const el = document.createElement("div");
   el.className = "msg " + (role === "user" ? "me" : "bot");
-  el.textContent = text;
+  // escape first, then turn the model's **bold** into <b>
+  if (role === "user") el.textContent = text;
+  else el.innerHTML = esc(text).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
   if (tools && tools.length) {
     const t = document.createElement("span"); t.className = "tools";
     t.textContent = "🔧 " + tools.map((c) => c.name).join(", "); el.appendChild(t);
