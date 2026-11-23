@@ -2,4 +2,4 @@
 window.SHOPBOT_API =
   location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:"
     ? "http://localhost:8000"
-    : "https://YOUR-SPACE.hf.space";
+    : "https://shopbot-pnm5.onrender.com";
