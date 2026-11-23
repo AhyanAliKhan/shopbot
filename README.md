@@ -6,9 +6,9 @@ Customers browse the shop and chat with **Bloom**, a LangGraph sales agent on `c
 
 | | |
 |---|---|
-| 🛍️ Live store | `https://YOUR-PROJECT.vercel.app` |
-| 📊 Seller dashboard | `https://YOUR-PROJECT.vercel.app/admin.html` |
-| 🤖 Agent API | `https://YOUR-SPACE.hf.space` (`POST /chat`, `GET /health`) |
+| 🛍️ Live store | https://shopbot-69.vercel.app |
+| 📊 Seller dashboard | https://shopbot-69.vercel.app/admin.html |
+| 🤖 Agent API | https://shopbot-pnm5.onrender.com (`POST /chat`, `GET /health`) |
 | 🎬 Demo video | `https://youtu.be/...` |
 | 📝 Workshop canvas | `https://drive.google.com/...` |
 
@@ -24,7 +24,7 @@ flowchart LR
     S[Storefront<br/>index.html] 
     A[Seller dashboard<br/>admin.html]
   end
-  subgraph API["Agent API: FastAPI on HF Spaces (Docker)"]
+  subgraph API["Agent API: FastAPI on Render (Docker)"]
     C["POST /chat"] --> G
     subgraph G["LangGraph"]
       direction LR
@@ -37,7 +37,7 @@ flowchart LR
     end
     R["/products /me/* /admin/*"]
   end
-  subgraph DB["Neon / Supabase Postgres"]
+  subgraph DB["Neon Postgres"]
     T1[(products · carts · orders<br/>coupons · pending_actions)]
     T2[(user_memory<br/>long-term, by user_id)]
     T3[(LangGraph checkpoints<br/>short-term, by thread_id)]
@@ -152,24 +152,15 @@ cd web && python -m http.server 5500
 # open http://localhost:5500  (config.js points to http://localhost:8000 on localhost)
 ```
 
-### 4. Deploy the Agent API on Hugging Face Spaces (Docker)
-1. Create a Space: **SDK = Docker**, blank template.
-2. Push the *contents* of `agent/` to the Space repo, and add this header to the Space's `README.md`:
-   ```yaml
-   ---
-   title: ShopBot Agent
-   sdk: docker
-   app_port: 7860
-   ---
-   ```
-3. Under **Settings → Variables and secrets**, add the secrets `ANTHROPIC_API_KEY`, `DATABASE_URL`, `ADMIN_API_KEY` and `SESSION_SECRET`.
-4. Check `https://<user>-<space>.hf.space/health` → `ok`.
-
-*Render alternative:* New → Web Service → this repo, Root Directory `agent`, Runtime Docker, then add the same env vars.
+### 4. Deploy the Agent API on Render (Docker)
+1. In [Render](https://render.com): **New → Web Service** → connect this repo. Set Root Directory to `agent`, Runtime to **Docker**, and Instance type to **Free**.
+2. Under **Environment**, add `ANTHROPIC_API_KEY`, `DATABASE_URL` (Neon), `ADMIN_API_KEY`, `SESSION_SECRET`, `MODEL=claude-haiku-5-5` and `EFFORT=low`. The Dockerfile listens on Render's `$PORT`.
+3. Deploy, then check `https://<service>.onrender.com/health` → `ok`.
+4. Render's free tier sleeps after 15 minutes idle. A free [UptimeRobot](https://uptimerobot.com) monitor pinging `/health` every 5 minutes keeps it awake.
 
 ### 5. Deploy the website on Vercel
-1. Set the production URL in `web/config.js` to your Space URL.
-2. In Vercel: New Project → import this repo → **Root Directory `web`**, Framework *Other*, no build command → Deploy.
+1. Set the production API URL in `web/config.js` to your Render URL.
+2. In Vercel: New Project → import this repo → **Root Directory `web`**, Application Preset *Other*, no build command → Deploy. Every push to `main` redeploys it.
 
 ## Repo layout
 ```

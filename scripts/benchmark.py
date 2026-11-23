@@ -1,7 +1,7 @@
 """Run tests.json against a running agent and print a markdown benchmark table.
 
     python scripts/benchmark.py --base http://localhost:8000
-    python scripts/benchmark.py --base https://your-space.hf.space --runs 2
+    python scripts/benchmark.py --base https://shopbot-pnm5.onrender.com --runs 2
 
 Uses only the standard library. Each run gets fresh user ids (suffix) so runs don't collide.
 """
