@@ -9,8 +9,8 @@ Customers browse the shop and chat with **Bloom**, a LangGraph sales agent on `c
 | 🛍️ Live store | https://shopbot-69.vercel.app |
 | 📊 Seller dashboard | https://shopbot-69.vercel.app/admin.html |
 | 🤖 Agent API | https://shopbot-pnm5.onrender.com (`POST /chat`, `GET /health`) |
-| 🎬 Demo video | `https://youtu.be/...` |
-| 📝 Workshop canvas | `https://drive.google.com/...` |
+| 🎬 Demo video | [Watch on Drive](https://drive.google.com/file/d/16mN6D3AV-vk7uOgR4wQfB4FwrdxRltu5/view) |
+| 📝 Workshop canvas | [Canvas photo](https://drive.google.com/file/d/1fgeRDtTGhgBKbhMHc7o5_BPJ9x56L3vx/view) |
 
 ![demo](docs/demo.gif)
 
