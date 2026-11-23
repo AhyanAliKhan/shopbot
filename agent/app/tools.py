@@ -6,6 +6,7 @@ a prompt tells it to.
 """
 from __future__ import annotations
 
+import datetime as dt
 import re
 import uuid
 from typing import Any, Callable
@@ -22,6 +23,9 @@ MEMORY_KEY_RE = re.compile(r"[^a-z0-9_]+")
 AFFIRMATIVE_RE = re.compile(
     r"\b(yes|yeah|yep|yup|sure|confirm(ed)?|go ahead|do it|place (it|the order)|proceed|ok(ay)?|"
     r"please do|sounds good|absolutely|cancel it)\b", re.I)
+# "no, don't cancel it" / "not okay" must never count as a yes.
+NEGATIVE_RE = re.compile(r"\b(no|nope|not|don'?t|do not|never|wait|stop|hold on)\b", re.I)
+PENDING_TTL = dt.timedelta(minutes=15)
 
 
 # ---------------------------------------------------------------- tool schemas
@@ -294,7 +298,11 @@ def confirm_pending_action(ctx):
             return {"error": "Nothing is waiting for confirmation."}
         if pa.turn_id == ctx["turn_id"]:
             return {"error": "The customer has not confirmed yet. Ask them first and wait for their reply."}
-        if not AFFIRMATIVE_RE.search(ctx.get("user_message", "")):
+        if now() - pa.created_at > PENDING_TTL:
+            s.delete(pa)
+            return {"error": "That request expired. Run checkout or cancel_order again and re-confirm."}
+        msg = ctx.get("user_message", "")
+        if not AFFIRMATIVE_RE.search(msg) or NEGATIVE_RE.search(msg):
             return {"error": "The customer's latest message is not a clear yes. Ask them to confirm explicitly."}
         action, payload = pa.action, dict(pa.payload)
         s.delete(pa)
@@ -312,6 +320,8 @@ def confirm_pending_action(ctx):
         cart = _cart_summary(s, ctx["user_id"], payload.get("city"))
         if not cart["items"]:
             return {"error": "Cart is empty."}
+        if cart["total"] != payload.get("total"):
+            return {"error": "The cart changed since the summary. Run checkout again and re-confirm."}
         for i in cart["items"]:
             p = s.get(Product, i["product_id"])
             if p.stock < i["quantity"]:

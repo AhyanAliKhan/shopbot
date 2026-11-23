@@ -16,13 +16,15 @@ from collections import defaultdict
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import delete, func, select
 
 from . import config as settings
-from .db import Cart, CartItem, ChatLog, Coupon, Order, Product, UserMemory, init_db, session
+from .db import ChatLog, Coupon, Order, Product, UserMemory, init_db, session
 from .graph import build_graph, make_checkpointer
 from .tools import _cart_summary, add_to_cart, load_memory, remove_from_cart
 
@@ -46,6 +48,16 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 @app.exception_handler(Exception)
 async def unhandled(request: Request, exc: Exception):
     return JSONResponse(status_code=500, content={"error": "internal_error"})
+
+
+@app.exception_handler(RequestValidationError)
+async def bad_request(request: Request, exc: RequestValidationError):
+    # /chat must answer in the graded contract shape even for malformed bodies
+    if request.url.path == "/chat":
+        return JSONResponse(status_code=400, content={
+            "reply": "Sorry, I couldn't read that request. Send JSON with user_id, thread_id and message.",
+            "tool_calls": [], "tokens": {"in": 0, "out": 0}})
+    return JSONResponse(status_code=422, content={"detail": jsonable_encoder(exc.errors())})
 
 
 # ------------------------------------------------------------------ grading API
@@ -203,7 +215,8 @@ def my_memory_clear(user_id: str = Depends(current_user)):
 
 # ------------------------------------------------------------------ admin
 def admin(x_admin_key: str = Header(...)):
-    if not hmac.compare_digest(x_admin_key, settings.ADMIN_API_KEY):
+    # fail closed if the deploy forgot to set ADMIN_API_KEY
+    if settings.ADMIN_API_KEY == "change-me-admin" or not hmac.compare_digest(x_admin_key, settings.ADMIN_API_KEY):
         raise HTTPException(401, "bad admin key")
 
 

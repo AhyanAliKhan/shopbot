@@ -8,10 +8,13 @@ Uses only the standard library. Each run gets fresh user ids (suffix) so runs do
 import argparse
 import json
 import statistics
+import sys
 import time
 import urllib.request
 import uuid
 from pathlib import Path
+
+sys.stdout.reconfigure(encoding="utf-8")  # emoji in replies crash the Windows console
 
 IN_PRICE, OUT_PRICE = 0.10 / 1e6, 0.50 / 1e6  # claude-haiku-5-5 list price, USD per token
 

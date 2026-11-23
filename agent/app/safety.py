@@ -43,7 +43,8 @@ FACT_PATTERNS = [
     ("name", re.compile(r"\b(?i:i am|i'm)\s+([A-Z][a-z\-']{1,30})\b(?=\s*(?:[,.!]|$|(?i:and)\b))")),
     ("shoe_size", re.compile(r"\b(?:shoe size|i wear (?:a )?size|my size is)\s*(?:is\s*)?(\d{2}(?:\.\d)?)\b", re.I)),
     ("clothing_size", re.compile(r"\b(?:clothing size|shirt size|i wear (?:a )?size|my size is)\s*(?:is\s*)?(XXS|XS|S|M|L|XL|XXL|small|medium|large)\b", re.I)),
-    ("city", re.compile(r"\b(?:i live in|i'm from|i am from|i'm based in|ship(?:ping)? to|deliver(?:y)? to)\s+([A-Z][a-zA-Z]+(?:\s[A-Z][a-zA-Z]+)?)", re.I)),
+    # only the prefix is case-insensitive, so "ship to my house" doesn't save city="My House"
+    ("city", re.compile(r"\b(?i:i live in|i'm from|i am from|i'm based in|ship(?:ping)? to|deliver(?:y)? to)\s+([A-Z][a-zA-Z]+(?:\s[A-Z][a-zA-Z]+)?)")),
     ("diet_or_values", re.compile(r"\b(i(?:'m| am) (?:vegan|vegetarian))\b", re.I)),
     ("allergy", re.compile(r"\b(?:i(?:'m| am) allergic to|allergy to)\s+([a-z ]{2,30}?)(?:[,.!]|$| and )", re.I)),
     ("favorite_color", re.compile(r"\b(?:my )?fav(?:ou?rite)? colou?r is\s+([a-z]{3,15})\b", re.I)),
