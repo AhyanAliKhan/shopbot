@@ -1,16 +1,18 @@
 :root {
-  /* onyx background, electric indigo for actions, tropical mint for accents */
+  /* onyx background, tropical mint for actions, electric indigo for accents, glass surfaces */
   --bg: #0f0f11;
-  --surface: #18181c;
-  --surface-2: #222228;
+  --surface: rgba(255, 255, 255, .05);
+  --surface-2: rgba(255, 255, 255, .08);
+  --glass: rgba(18, 18, 22, .72);
+  --blur: blur(18px) saturate(150%);
   --ink: #f1f1f4;
   --muted: #9b9bab;
-  --line: #2e2e36;
-  --brand: #6f00ff;
-  --brand-ink: #ffffff;
-  --brand-soft: #241542;
-  --mint: #3ee8b5;
-  --mint-ink: #0f0f11;
+  --line: rgba(255, 255, 255, .12);
+  --brand: #3ee8b5;
+  --brand-ink: #0f0f11;
+  --brand-soft: rgba(62, 232, 181, .16);
+  --accent: #6f00ff;
+  --accent-ink: #ffffff;
   --ok: #3ee8b5;
   --warn: #f2b84b;
   --bad: #ff5c7a;
@@ -22,6 +24,11 @@
 html, body { margin: 0; }
 body {
   background: var(--bg); color: var(--ink);
+  /* soft indigo and mint glows give the glass panels something to blur */
+  background-image: radial-gradient(40rem 30rem at 10% -10%, rgba(111, 0, 255, .35), transparent 60%),
+    radial-gradient(36rem 28rem at 100% 30%, rgba(62, 232, 181, .18), transparent 60%),
+    radial-gradient(30rem 24rem at 40% 110%, rgba(111, 0, 255, .22), transparent 60%);
+  background-attachment: fixed; min-height: 100vh;
   font: 15px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 h1, h2, h3, .serif { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: -.01em; }
@@ -40,7 +47,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 input, select, textarea {
   border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: .55rem .75rem; width: 100%;
 }
-input:focus, select:focus, textarea:focus { outline: 2px solid var(--mint); outline-offset: 1px; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .muted { color: var(--muted); }
 .pill { display: inline-block; padding: .1rem .55rem; border-radius: 999px; font-size: 12px; background: var(--surface-2); color: var(--muted); }
 .pill.ok { background: color-mix(in srgb, var(--ok) 15%, transparent); color: var(--ok); }
@@ -50,13 +57,14 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--mint); outl
 /* ---------- top bar ---------- */
 .topbar {
   position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px;
-  padding: 12px 24px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px);
+  padding: 12px 24px; background: rgba(15, 15, 17, .55); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
   border-bottom: 1px solid var(--line);
 }
 .logo { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 700; text-decoration: none; }
-.logo span { color: var(--mint); }
+/* lightened so the indigo logo text stays readable on onyx */
+.logo span { color: color-mix(in srgb, var(--accent) 70%, white); }
 .topbar .spacer { flex: 1; }
-.badge { background: var(--mint); color: var(--mint-ink); border-radius: 999px; font-size: 11px; padding: 0 6px; margin-left: 4px; }
+.badge { background: var(--accent); color: var(--accent-ink); border-radius: 999px; font-size: 11px; padding: 0 6px; margin-left: 4px; }
 
 /* ---------- storefront ---------- */
 .hero {
@@ -69,11 +77,11 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--mint); outl
   background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 22px; box-shadow: var(--shadow);
 }
 .hero-card .bubble { background: var(--surface-2); border-radius: 14px; padding: 10px 14px; margin: 8px 0; font-size: 14px; }
-.hero-card .bubble.me { background: var(--brand); color: #fff; margin-left: 30%; }
+.hero-card .bubble.me { background: var(--brand); color: var(--brand-ink); margin-left: 30%; }
 .container { max-width: 1180px; margin: 0 auto; padding: 0 24px 80px; }
 .filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 18px 0; align-items: center; }
 .filters .chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: .35rem .85rem; cursor: pointer; }
-.filters .chip.active { background: var(--mint); color: var(--mint-ink); border-color: var(--mint); }
+.filters .chip.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .filters input { max-width: 260px; margin-left: auto; border-radius: 999px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
 .card {
@@ -118,7 +126,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--mint); outl
 .chat .msgs { flex: 1; overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
 .msg { max-width: 85%; padding: 9px 13px; border-radius: 16px; white-space: pre-wrap; word-wrap: break-word; }
 .msg.bot { background: var(--surface-2); border-bottom-left-radius: 4px; }
-.msg.me { background: var(--brand); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.msg.me { background: var(--brand); color: var(--brand-ink); align-self: flex-end; border-bottom-right-radius: 4px; }
 .msg .tools { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; }
 .chat form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
 .chat form input { border-radius: 999px; }
@@ -161,3 +169,11 @@ th { color: var(--muted); font-weight: 500; font-size: 13px; }
   .form-grid .wide { grid-column: auto; }
   .bar-row { grid-template-columns: 110px 1fr 32px; }
 }
+
+/* ---------- glass ---------- */
+.hero-card, .card, .kpi, .panel, .chat, .drawer, .btn, .filters .chip {
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+}
+/* overlays sit on busy content, so they get a darker glass to keep text readable */
+.chat, .drawer { background: var(--glass); }
+.hero-card, .card { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), var(--shadow); }
